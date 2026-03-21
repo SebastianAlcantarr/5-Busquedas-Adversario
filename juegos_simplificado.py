@@ -1,5 +1,5 @@
 """
-Modulo para las clases básicas para realizar un jkuego de forma muy simplificada
+Modulo para las clases básicas para realizar un juego de forma muy simplificada
     
 Vamos a usar una orientación funcional en este modulo
 
@@ -65,8 +65,10 @@ def juega_dos_jugadores(juego, jugador1, jugador2):
     
     """
     s, j = juego.inicializa()
+
     while not juego.terminal(s):
-        a = jugador1(juego, s, j) if j == 1 else jugador2(juego, s, j)
+        a = jugador1(juego, s, j)\
+            if j == 1 else jugador2(juego, s, j)
         s = juego.transicion(s, a, j)
         j = -j
     return juego.ganancia(s), s
@@ -78,6 +80,7 @@ def minimax(juego, estado, jugador):
     
     """
     j = jugador
+
     def max_val(estado, jugador):
         if juego.terminal(estado):
             return j * juego.ganancia(estado)
@@ -143,7 +146,9 @@ def alpha_beta(juego, estado, jugador, ordena=None):
                 return v
             alpha = max(alpha, v)
         return v
-    
+
+
+
     def min_val(estado, jugador, alpha, beta):
         if juego.terminal(estado):
             return j * juego.ganancia(estado)

@@ -3,7 +3,6 @@ Juego de conecta 4
 
 El estado se va a representar como una lista de 42 elementos, tal que
 
-
 0  1  2  3  4  5  6
 7  8  9 10 11 12 13
 14 15 16 17 18 19 20
@@ -102,7 +101,10 @@ def ordena_centro(jugadas, jugador):
     """
     Ordena las jugadas de acuerdo a la distancia al centro
     """
-    return sorted(jugadas, key=lambda x: abs(x - 4))
+    return sorted(jugadas, key=lambda x: abs(x - 3))
+
+
+
 
 def evalua_3con(s):
     """
@@ -146,6 +148,57 @@ def evalua_3con(s):
         print("ERROR, evaluación fuera de rango --> ", promedio)
     return promedio
 
+def ordena_mejorado(jugadas, jugador):
+    """
+    Ordena las jugadas de acuerdo a la distancia al centro
+    """
+    return sorted(jugadas, key=lambda x: abs(x - 3))
+
+
+
+
+def evalua_mejorado(s):
+    """
+    Evalua el estado s para el jugador 1
+    """
+    conect3 = sum(
+        1 for i in range(7) for j in range(4)
+        if (s[i + 7 * j] == s[i + 7 * (j + 1)]
+            == s[i + 7 * (j + 2)] == 1)
+    ) - sum(
+        1 for i in range(7) for j in range(4)
+        if (s[i + 7 * j] == s[i + 7 * (j + 1)]
+            == s[i + 7 * (j + 2)] == -1)
+    ) + sum(
+        1 for i in range(6) for j in range(5)
+        if (s[7 * i + j] == s[7 * i + j + 1]
+            == s[7 * i + j + 2] == 1)
+    ) - sum(
+        1 for i in range(6) for j in range(5)
+        if (s[7 * i + j] == s[7 * i + j + 1]
+            == s[7 * i + j + 2] == -1)
+    ) + sum(
+        1 for i in range(5) for j in range(4)
+        if (s[i + 7 * j] == s[i + 7 * j + 8]
+            == s[i + 7 * j + 16] == 1)
+    ) - sum(
+        1 for i in range(5) for j in range(4)
+        if (s[i + 7 * j] == s[i + 7 * j + 8]
+            == s[i + 7 * j + 16] == -1)
+    ) + sum(
+        1 for i in range(5) for j in range(4)
+        if (s[i + 7 * j + 3] == s[i + 7 * j + 9]
+            == s[i + 7 * j + 15] == 1)
+    ) - sum(
+        1 for i in range(5) for j in range(4)
+        if (s[i + 7 * j + 3] == s[i + 7 * j + 9]
+            == s[i + 7 * j + 15] == -1)
+    )
+    promedio = conect3 / (7 * 4 + 6 * 5 + 5 * 4 + 5 * 4)
+    if abs(promedio) >= 1:
+        print("ERROR, evaluación fuera de rango --> ", promedio)
+    return promedio
+
 
     
 if __name__ == '__main__':
@@ -160,11 +213,14 @@ if __name__ == '__main__':
         print("   1. Jugador manual")
         print("   2. Jugador negamax limitado en profundidad")
         print("   3. Jugador negamax limitado en tiempo")
-        while sel not in [1, 2, 3]:
+        print ("  4. Jugador negamax limitado en profundidad mejorado")
+
+        while sel not in [1, 2, 3,4]:
             sel = int(input(f"Jugador para las {' XO'[j]}: "))
     
         if sel == 1:
             jugs.append(jugador_manual_conecta4)
+
         elif sel == 2:
             d = None
             while type(d) != int or d < 1:
@@ -172,12 +228,19 @@ if __name__ == '__main__':
             jugs.append(lambda juego, s, j: jugador_negamax(
                 juego, s, j, ordena=ordena_centro, evalua=evalua_3con, d=d)
             )
-        else:
+        elif sel == 3:
             t = None
             while type(t) != int or t < 1:
                 t = int(input("Tiempo: "))
             jugs.append(lambda juego, s, j: minimax_iterativo(
                 juego, s, j, ordena=ordena_centro, evalua=evalua_3con, tiempo=t)
+            )
+        else:
+            t = None
+            while type(t) != int or t < 1:
+                t = int(input("Tiempo: "))
+            jugs.append(lambda juego, s, j: minimax_iterativo(
+                juego, s, j, ordena=ordena_mejorado, evalua=evalua_mejorado, tiempo=t)
             )
         
     g, s_final = juega_dos_jugadores(modelo, jugs[0], jugs[1])

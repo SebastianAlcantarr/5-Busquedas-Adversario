@@ -80,11 +80,15 @@ def negamax(
             v = v2
             mejor = a
             mejores = traza_actual[:]
+
         if v >= beta:
             break
+
         if v > alpha:
             alpha = v
+
     transp[estado] = (v, d)
+
     return [mejor] + mejores, v 
 
 
