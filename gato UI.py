@@ -3,7 +3,6 @@ import pygame.freetype
 import sys
 from Ultimate_Gato import UltimateGato, jugador_negamax_profundo
 
-# --- Configuración visual ---
 ANCHO, ALTO = 620, 670
 MARGEN = 20
 CELDA_GRANDE = 185
