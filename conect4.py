@@ -104,43 +104,41 @@ def ordena_centro(jugadas, jugador):
     return sorted(jugadas, key=lambda x: abs(x - 3))
 
 
-
-
 def evalua_3con(s):
     """
     Evalua el estado s para el jugador 1
     """
     conect3 = sum(
-        1 for i in range(7) for j in range(4) 
-        if (s[i + 7 * j] == s[i + 7 * (j + 1)] 
+        1 for i in range(7) for j in range(4)
+        if (s[i + 7 * j] == s[i + 7 * (j + 1)]
             == s[i + 7 * (j + 2)] == 1)
     ) - sum(
-        1 for i in range(7) for j in range(4) 
-        if (s[i + 7 * j] == s[i + 7 * (j + 1)] 
+        1 for i in range(7) for j in range(4)
+        if (s[i + 7 * j] == s[i + 7 * (j + 1)]
             == s[i + 7 * (j + 2)] == -1)
     ) + sum(
-        1 for i in range(6) for j in range(5) 
-        if (s[7 * i + j] == s[7 * i + j + 1] 
+        1 for i in range(6) for j in range(5)
+        if (s[7 * i + j] == s[7 * i + j + 1]
             == s[7 * i + j + 2] == 1)
     ) - sum(
-        1 for i in range(6) for j in range(5) 
-        if (s[7 * i + j] == s[7 * i + j + 1] 
+        1 for i in range(6) for j in range(5)
+        if (s[7 * i + j] == s[7 * i + j + 1]
             == s[7 * i + j + 2] == -1)
     ) + sum(
-        1 for i in range(5) for j in range(4) 
-        if (s[i + 7 * j] == s[i + 7 * j + 8] 
+        1 for i in range(5) for j in range(4)
+        if (s[i + 7 * j] == s[i + 7 * j + 8]
             == s[i + 7 * j + 16] == 1)
     ) - sum(
-        1 for i in range(5) for j in range(4) 
-        if (s[i + 7 * j] == s[i + 7 * j + 8] 
+        1 for i in range(5) for j in range(4)
+        if (s[i + 7 * j] == s[i + 7 * j + 8]
             == s[i + 7 * j + 16] == -1)
     ) + sum(
-        1 for i in range(5) for j in range(4) 
-        if (s[i + 7 * j + 3] == s[i + 7 * j + 9] 
+        1 for i in range(5) for j in range(4)
+        if (s[i + 7 * j + 3] == s[i + 7 * j + 9]
             == s[i + 7 * j + 15] == 1)
     ) - sum(
-        1 for i in range(5) for j in range(4) 
-        if (s[i + 7 * j + 3] == s[i + 7 * j + 9] 
+        1 for i in range(5) for j in range(4)
+        if (s[i + 7 * j + 3] == s[i + 7 * j + 9]
             == s[i + 7 * j + 15] == -1)
     )
     promedio = conect3 / (7 * 4 + 6 * 5 + 5 * 4 + 5 * 4)
@@ -148,58 +146,72 @@ def evalua_3con(s):
         print("ERROR, evaluación fuera de rango --> ", promedio)
     return promedio
 
-def ordena_mejorado(jugadas, jugador):
+
+#Mismo funcionamiento , ordena al centro pero con distancia 3 , priorizando la columa central
+def ordena_h2(jugadas, jugador):
     """
     Ordena las jugadas de acuerdo a la distancia al centro
     """
     return sorted(jugadas, key=lambda x: abs(x - 3))
 
 
-
-
-def evalua_mejorado(s):
+def evalua_h2(s):
     """
-    Evalua el estado s para el jugador 1
+    Evalúa el estado s para el jugador 1 usando ciclos for tradicionales.
     """
-    conect3 = sum(
-        1 for i in range(7) for j in range(4)
-        if (s[i + 7 * j] == s[i + 7 * (j + 1)]
-            == s[i + 7 * (j + 2)] == 1)
-    ) - sum(
-        1 for i in range(7) for j in range(4)
-        if (s[i + 7 * j] == s[i + 7 * (j + 1)]
-            == s[i + 7 * (j + 2)] == -1)
-    ) + sum(
-        1 for i in range(6) for j in range(5)
-        if (s[7 * i + j] == s[7 * i + j + 1]
-            == s[7 * i + j + 2] == 1)
-    ) - sum(
-        1 for i in range(6) for j in range(5)
-        if (s[7 * i + j] == s[7 * i + j + 1]
-            == s[7 * i + j + 2] == -1)
-    ) + sum(
-        1 for i in range(5) for j in range(4)
-        if (s[i + 7 * j] == s[i + 7 * j + 8]
-            == s[i + 7 * j + 16] == 1)
-    ) - sum(
-        1 for i in range(5) for j in range(4)
-        if (s[i + 7 * j] == s[i + 7 * j + 8]
-            == s[i + 7 * j + 16] == -1)
-    ) + sum(
-        1 for i in range(5) for j in range(4)
-        if (s[i + 7 * j + 3] == s[i + 7 * j + 9]
-            == s[i + 7 * j + 15] == 1)
-    ) - sum(
-        1 for i in range(5) for j in range(4)
-        if (s[i + 7 * j + 3] == s[i + 7 * j + 9]
-            == s[i + 7 * j + 15] == -1)
-    )
-    promedio = conect3 / (7 * 4 + 6 * 5 + 5 * 4 + 5 * 4)
+    conect3 = 0
+
+    # 1. BUSCAR TERCIAS VERTICALES
+    # Recorre cada columna (0 a 6) y cada posible posición de inicio (filas)
+    for i in range(7):
+        for j in range(4):
+            # Posiciones: actual, una abajo, dos abajo
+            f1, f2, f3 = s[i + 7 * j], s[i + 7 * (j + 1)], s[i + 7 * (j + 2)]
+            if f1 == f2 == f3 == 1:
+                conect3 += 1
+            elif f1 == f2 == f3 == -1:
+                conect3 -= 1
+
+    # 2. BUSCAR TERCIAS HORIZONTALES
+    # Recorre cada fila (0 a 5) y cada posible inicio horizontal
+    for i in range(6):
+        for j in range(5):
+            # Posiciones: actual, una a la derecha, dos a la derecha
+            f1, f2, f3 = s[7 * i + j], s[7 * i + j + 1], s[7 * i + j + 2]
+            if f1 == f2 == f3 == 1:
+                conect3 += 1
+            elif f1 == f2 == f3 == -1:
+                conect3 -= 1
+
+    # 3. BUSCAR TERCIAS DIAGONALES (Hacia abajo-derecha \)
+    for i in range(5):
+        for j in range(4):
+            # El salto de 8 índices se mueve una fila abajo y una columna a la derecha
+            f1, f2, f3 = s[i + 7 * j], s[i + 7 * j + 8], s[i + 7 * j + 16]
+            if f1 == f2 == f3 == 1:
+                conect3 += 1
+            elif f1 == f2 == f3 == -1:
+                conect3 -= 1
+
+    # 4. BUSCAR TERCIAS DIAGONALES (Hacia abajo-izquierda /)
+    for i in range(5):
+        for j in range(4):
+            # El salto de 6 índices se mueve una fila abajo y una columna a la izquierda
+            f1, f2, f3 = s[i + 7 * j + 3], s[i + 7 * j + 9], s[i + 7 * j + 15]
+            if f1 == f2 == f3 == 1:
+                conect3 += 1
+            elif f1 == f2 == f3 == -1:
+                conect3 -= 1
+
+    # NORMALIZACIÓN
+    # Se divide entre el total de combinaciones posibles para que el valor esté entre -1 y 1
+    total_combinaciones = (7 * 4) + (6 * 5) + (5 * 4) + (5 * 4)
+    promedio = conect3 / total_combinaciones
+
     if abs(promedio) >= 1:
         print("ERROR, evaluación fuera de rango --> ", promedio)
+
     return promedio
-
-
     
 if __name__ == '__main__':
 
@@ -233,14 +245,14 @@ if __name__ == '__main__':
             while type(t) != int or t < 1:
                 t = int(input("Tiempo: "))
             jugs.append(lambda juego, s, j: minimax_iterativo(
-                juego, s, j, ordena=ordena_centro, evalua=evalua_3con, tiempo=t)
+                juego, s, j, ordena=ordena_h2, evalua=evalua_3con, tiempo=t)
             )
         else:
             t = None
             while type(t) != int or t < 1:
                 t = int(input("Tiempo: "))
             jugs.append(lambda juego, s, j: minimax_iterativo(
-                juego, s, j, ordena=ordena_mejorado, evalua=evalua_mejorado, tiempo=t)
+                juego, s, j, ordena=ordena_centro, evalua=evalua_h2, tiempo=t)
             )
         
     g, s_final = juega_dos_jugadores(modelo, jugs[0], jugs[1])
